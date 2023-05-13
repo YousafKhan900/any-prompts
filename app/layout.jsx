@@ -1,22 +1,27 @@
 import "@styles/globals.css";
 
+import Head from "next/head";
+
 import Nav from "@components/Nav";
 import Provider from "@components/Provider";
 
 export const metadata = {
-  title: "Promptopia",
+  title: "AnyPrompts",
   description: "Discover & Share AI Prompts",
+  icons: {
+    icon: "/assets/images/logo.png",
+  },
 };
 
 const RootLayout = ({ children }) => (
-  <html lang='en'>
+  <html lang="en">
     <body>
       <Provider>
-        <div className='main'>
-          <div className='gradient' />
+        <div className="main">
+          <div className="gradient" />
         </div>
 
-        <main className='app'>
+        <main className="app">
           <Nav />
           {children}
         </main>
