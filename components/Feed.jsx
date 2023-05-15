@@ -2,7 +2,9 @@
 
 import { useState, useEffect } from "react";
 
+import Image from "next/image";
 import PromptCard from "./PromptCard";
+import { set } from "mongoose";
 
 const PromptCardList = ({ data, handleTagClick }) => {
   return (
@@ -19,6 +21,7 @@ const PromptCardList = ({ data, handleTagClick }) => {
 };
 
 const Feed = () => {
+  const [loading, setLoading] = useState(true);
   const [allPosts, setAllPosts] = useState([]);
 
   // Search states
@@ -27,14 +30,21 @@ const Feed = () => {
   const [searchedResults, setSearchedResults] = useState([]);
 
   useEffect(() => {
+    setLoading(true);
     const fetchPosts = async () => {
       const response = await fetch("/api/prompt");
       const data = await response.json();
 
       setAllPosts(data);
+      setLoading(false);
     };
 
-    fetchPosts();
+    try {
+      fetchPosts();
+    } catch (err) {
+      setLoading(true);
+      console.log(err);
+    }
   }, []);
 
   const filterPrompts = (searchtext) => {
@@ -81,13 +91,27 @@ const Feed = () => {
       </form>
 
       {/* All Prompts */}
-      {searchText ? (
-        <PromptCardList
-          data={searchedResults}
-          handleTagClick={handleTagClick}
-        />
+      {loading ? (
+        <div className="w-full flex-center mt-16">
+          <Image
+            src="assets/icons/loader.svg"
+            width={50}
+            height={50}
+            alt="loader"
+            className="object-contain"
+          />
+        </div>
       ) : (
-        <PromptCardList data={allPosts} handleTagClick={handleTagClick} />
+        <div>
+          {searchText ? (
+            <PromptCardList
+              data={searchedResults}
+              handleTagClick={handleTagClick}
+            />
+          ) : (
+            <PromptCardList data={allPosts} handleTagClick={handleTagClick} />
+          )}
+        </div>
       )}
     </section>
   );
